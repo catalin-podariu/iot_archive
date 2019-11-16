@@ -1,5 +1,5 @@
 #include <ESP8266WiFi.h>
- 
+
 const char* ssid = "";//type your ssid
 const char* password = "";//type your password
 
@@ -7,15 +7,15 @@ const char* password = "";//type your password
 byte switchON[] = {0xA0, 0x01, 0x01, 0xA2};
 
 //Hex command to send to serial for close relay
-byte switchOFF[] = {0xA0, 0x01, 0x00, 0xA1}; 
+byte switchOFF[] = {0xA0, 0x01, 0x00, 0xA1};
 
 int ledPin = 0 ; // GPIO2 of ESP8266
 WiFiServer server(80);
- 
+
 void setup() {
   Serial.begin(9600);
   delay(10);
- 
+
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, LOW);
 
@@ -23,19 +23,19 @@ void setup() {
   Serial.write(switchOFF, sizeof(switchOFF));
   delay(10);
   Serial.write(switchOFF, sizeof(switchOFF));
-   
-  // Connect to WiFi network   
+
+  // Connect to WiFi network
   WiFi.begin(ssid, password);
-   
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-   
+
   // Start the server
-  server.begin();  
+  server.begin();
 }
- 
+
 void loop() {
   // Check if a client has connected
   WiFiClient client = server.available();
@@ -44,10 +44,10 @@ void loop() {
   }
 
   // Wait until the client sends some data
-  while(!client.available()){
+  while (!client.available()) {
     delay(1);
   }
-   
+
   // Read the first line of the request
   String request = client.readStringUntil('\r');
   client.flush();
@@ -55,12 +55,12 @@ void loop() {
   // Match the request
   int value = LOW;
   if (request.indexOf("/LED=ON") != -1) {
-    digitalWrite(ledPin, HIGH);
+    digitalWrite(ledPin, LOW);
     Serial.write(switchON, sizeof(switchON));
     value = HIGH;
-  } 
-  if (request.indexOf("/LED=OFF") != -1){
-    digitalWrite(ledPin, LOW);
+  }
+  if (request.indexOf("/LED=OFF") != -1) {
+    digitalWrite(ledPin, HIGH);
     Serial.write(switchOFF, sizeof(switchOFF));
     value = LOW;
   }
@@ -68,7 +68,7 @@ void loop() {
   writeHeader(client);
   writeStatus(client, value);
   writeOptions(client);
-  
+
   delay(10);
 }
 
@@ -82,9 +82,9 @@ void writeHeader(WiFiClient client) {
 
 void writeStatus(WiFiClient client, int value) {
   client.print("Led pin is now: ");
-   
-  if(value == HIGH) {
-    client.print("On");  
+
+  if (value == HIGH) {
+    client.print("On");
   } else {
     client.print("Off");
   }
