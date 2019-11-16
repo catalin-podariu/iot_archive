@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
  
-const char* ssid = "UPC6E81C15";//type your ssid
-const char* password = "cxw4Zk8Esmpt";//type your password
+const char* ssid = "";//type your ssid
+const char* password = "";//type your password
 
 //Hex command to send to serial for open relay
 byte switchON[] = {0xA0, 0x01, 0x01, 0xA2};
